@@ -3,6 +3,8 @@ import Sidebar from "../Sidebar/Sidebar";
 import Navbar from "../Navbar/Navbar";
 import ProductService from "../../service/productservice";
 import data from "../../data/data.json"
+import ListProduct from './../ListProduct';
+
 
 
 function Content() {
@@ -258,6 +260,11 @@ function Content() {
             setCartItem(cartItem + 1)
         }
     }
+
+    useEffect(() => {
+        let ListCarts = ProductService.getAllCart();
+        console.log(ListCarts);
+    },[])
 
     useEffect(() => {
         handleSetFilterProducts()
