@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 
-function Navbar({ handleSetSearchStatus, handleSetSearch, cartItem }) {
+function Navbar({ handleSetSearchStatus, handleSetSearch }) {
     return (
         <div className="row navbar">
             <div className="col-md-2">
@@ -28,7 +28,7 @@ function Navbar({ handleSetSearchStatus, handleSetSearch, cartItem }) {
                         </i>
                     </Link>
 
-                    <span className="cart-item">{cartItem}</span>
+                    <span className="cart-item"></span>
                 </div>
                 <div>
                     <Link to="/dashboard">

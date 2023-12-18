@@ -247,28 +247,8 @@ function Content() {
 
     }
 
-    const [cartItem, setCartItem] = useState(0)
+    // const [cartItem, setCartItem] = useState(0)
     
-    const getAllCart = () => {
-        return ProductService.getAllCart();
-    } 
-
-    const handleChangeCartItem = async (id) => {
-        const carts = await getAllCart();
-        console.log(carts);
-        const index = carts.findIndex((item) => item.id === id)
-        if (index > -1) {
-            alert("da tang so luong san pham nay trong gio")
-
-        }
-        else {
-            let item = { "id": id,
-                        "quantity": 1
-            }
-            await ProductService.createCart(item)
-            setCartItem(cartItem + 1)
-        }
-    }
 
     // const handleChangeCartItem = (id) => {
     //     const index = listCart.findIndex((item) => item.id === id)
@@ -309,7 +289,7 @@ function Content() {
 
     return (
         <>
-            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} cartItem={cartItem} />
+            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} />
             <div className="row d-flex">
                 <Sidebar handleSetCategory={handleSetCategory} handleSetCategoryStatus={handleSetCategoryStatus}
                     handleSetColor={handleSetColor} handleSetColorStatus={handleSetColorStatus}
