@@ -2,32 +2,35 @@ import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import { Link } from 'react-router-dom'
 import ModalUpdate from "./ModalUpdate";
+import ProductService from "../service/productservice";
 
 
 
-
-function ListProduct({ data, setData }) {
+function ListProduct() {
     const [showModalUpdate, setShowModalUpdate] = useState(false);
 
-    const [products, setProducts] = useState(data.products)
+    const [products, setProducts] = useState([])
     const [product, setProduct] = useState({})
 
-    const handleUpdateProducts = (obj) => {
-        
-        const index = products.findIndex(item => item.id === obj.id)
+    const getAllProducts = async () => {
+        const data = await ProductService.getAllProducts();
+        setProducts(data)
+    }
+
+    const handleUpdateProducts = async (obj) => {
+        const updateProduct = await ProductService.update(obj.id, obj)
+
+        const index = products.findIndex(item => item.id === updateProduct.id)
        
         const newProducts = [...products]
-        newProducts[index] = obj
+        newProducts[index] = updateProduct
        
         setProducts(newProducts)
     }
 
-    const findById = (id) => {
-        return products.find((item) => item.id === id)
-    }
 
-    const handleOpenModalUpdate = (id) => {
-        const product = findById(id)
+    const handleOpenModalUpdate = async (id) => {
+        const product = await ProductService.getById(id)
 
         if(Object.keys(product).length) {
             setProduct(product)
@@ -44,19 +47,17 @@ function ListProduct({ data, setData }) {
         setShowModalUpdate(false)
     }
 
-    const handleDeleteProduct = (id) => {
-        const product = findById(id);
+    const handleDeleteProduct = async (id) => {
+        const product = await ProductService.getById(id);
 
         if (Object.keys(product).length) {
             const productsNew = products.filter((item) => item.id != id)
 
             let result = window.confirm(`Ban co chac chan muon xoa san pham ID = ${id} nay khong???`)
             if(result) {
+                ProductService.delete(id)
                 setProducts(productsNew)
-                setData({
-                    ...data,
-                    products: products
-                })
+            
 
                 alert("Xoa thanh cong")
             }
@@ -65,11 +66,8 @@ function ListProduct({ data, setData }) {
     }
 
     useEffect(() => {
-        setData({
-            ...data,
-            products: products
-        })
-    }, [products])
+        getAllProducts()
+    }, [])
 
 
     return (
@@ -93,7 +91,7 @@ function ListProduct({ data, setData }) {
                         </thead>
                         <tbody>
                             {
-                                data.products.sort(function (a, b) { return b.id - a.id }).map((item) => {
+                               products.sort(function (a, b) { return b.id - a.id }).map((item) => {
                                     return (
                                         <tr key={item.id}>
                                             <td>{item.id}</td>
@@ -128,7 +126,7 @@ function ListProduct({ data, setData }) {
             handleCloseModalUpdate={handleCloseModalUpdate}
             product={product}
             handleUpdateProducts={handleUpdateProducts}
-            data={data}
+            
             />
             
 

@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
-// import data from "../../data/data.json"
 import Sidebar from "../Sidebar/Sidebar";
 import Navbar from "../Navbar/Navbar";
+import ProductService from "../../service/productservice";
+import data from "../../data/data.json"
 
-// const products = data.products;
 
-function Content({data, setData}) {
-    const [productList, setProductList] = useState(data.products)
+function Content() {
+    
+
+    const getAllProducts = async () => {
+        const data = await ProductService.getAllProducts();
+        setProductList(data)
+    }
+
+
+    useEffect(() => {
+        getAllProducts()
+    }, [])
+
+    const [productList, setProductList] = useState([])
     const [filterProducts, setFilterProducts] = useState([])
 
     const [company, setCompany] = useState(null)
@@ -233,14 +245,29 @@ function Content({data, setData}) {
 
     }
 
+    const [cartItem, setCartItem] = useState(0)
+    const [listIdCart, setListIdCart] = useState([])
+
+    const handleChangeCartItem = (id) => {
+        if(listIdCart.includes(id)) {
+            alert("sp da co trong gio")
+            return;
+        } else {
+            const newListIdCart = [...listIdCart, id]
+            setListIdCart(newListIdCart)
+            setCartItem(cartItem + 1)
+        }
+    }
 
     useEffect(() => {
         handleSetFilterProducts()
     }, [company, category, color, price, search])
 
+
+
     return (
         <>
-            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus}/>
+            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} cartItem={cartItem}/>
             <div className="row d-flex">
                 <Sidebar handleSetCategory={handleSetCategory} handleSetCategoryStatus={handleSetCategoryStatus}
                     handleSetColor={handleSetColor} handleSetColorStatus={handleSetColorStatus}
@@ -273,7 +300,7 @@ function Content({data, setData}) {
                     <div className="d-flex flex-wrap mt-3 gap-3">
                         {
                             companyStatus || categoryStatus || colorStatus || priceStatus || searchStatus ? <ShoesList data={filterProducts} /> :
-                                <ShoesList data={productList} />
+                                <ShoesList data={productList} cartItem={cartItem} handleChangeCartItem={handleChangeCartItem}/>
                         }
 
                     </div>
@@ -285,10 +312,10 @@ function Content({data, setData}) {
     )
 }
 
-function ShoesList({ data }) {
+function ShoesList({data, handleChangeCartItem}) {
 
     return (
-        data.map((shoe) => (
+        data.sort(function (a, b) { return b.id - a.id }).map((shoe) => (
             <div className="card p-3 d-flex align-items-center" style={{ width: "255px", height: "400px" }} key={shoe.id}>
                 <img src={shoe.img} className="card-img-top mt-2" style={{ width: "180px", height: "150px" }} alt="..." />
                 <div className="card-body mt-5">
@@ -303,7 +330,10 @@ function ShoesList({ data }) {
                     <div className="d-flex gap-4 align-items-center mt-3 justify-content-between">
                         <span className="" style={{ textDecoration: 'line-through' }}>{shoe.prevPrice}$</span>
                         <span>{shoe.newPrice}$</span>
-                        <i className="fa-solid fa-cart-arrow-down"></i>
+                        <i type='button' 
+                        className="fa-solid fa-cart-arrow-down"
+                            onClick={() => handleChangeCartItem(shoe.id)}
+                        ></i>
                     </div>
 
                 </div>

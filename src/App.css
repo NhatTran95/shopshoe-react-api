@@ -1,7 +1,8 @@
 .navbar-icon{
   display: flex;
   justify-content: end;
-  gap: 20px
+  gap: 20px;
+  
 }
 
 .navbar i {
@@ -9,3 +10,14 @@
   color: rgb(29, 29, 149);
 }
 
+.div-cart {
+  position: relative;
+}
+.cart-item {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red; 
+  color: white; 
+  padding: 1px;
+}

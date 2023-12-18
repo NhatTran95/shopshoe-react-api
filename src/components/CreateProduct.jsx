@@ -1,40 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import { Link } from 'react-router-dom'
+import ProductService from "../service/productservice";
+import data from "../data/data.json"
+import axios from "axios";
 
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-function CreateProduct({data, setData}) {
+function CreateProduct() {
     const [product, setProduct] = useState({})
-    const [maxId, setMaxId] = useState(0)
-    const products = data.products
-
-    const handleChangeMaxId = () => {
-        let currentId = 0;
-        products.map((item) => {
-            if (item.id > currentId) {
-                currentId = item.id
-            }
-        })
-        setMaxId(currentId)
-    }
+    const [fileDataURL, setfileDataURL] = useState(null)
+    const [file, setFile] = useState(null)
 
     const handleChangeProduct = (e) => {
         setProduct({
             ...product,
             [e.target.name]: e.target.value
         })
-        console.log(product);
+       
     }
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
 
-        const products = data.products
-        products.push(product)
-
-        setData({
-            ...data,
-            products: products
-        })
+        await ProductService.create(product)
 
         alert("Them moi thanh cong")
         
@@ -49,37 +37,65 @@ function CreateProduct({data, setData}) {
             img: ''
         })
 
-        handleChangeMaxId()
+        setfileDataURL(null)
 
     }
 
-    useEffect(() => {
-        handleChangeMaxId()
-    },[])
+    const handleClickImage = () => {
+        document.getElementById('avatar').click()
+    }
 
-    useEffect(() => {
+    const uploadAvatar = async (e) => {
+        const file = e.target.files[0];
+
+        if (!file.type.match(imageMimeType)) {
+            alert('Image mime type is not valid');
+            return;
+        }
+
+        let fileReader,
+            isCancel = false;
+        
+        if (!file) {
+            return;
+        }
+        
+        if (file) {
+            fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                const {result} = e.target;
+                if (result && !isCancel) {
+                    setfileDataURL(result)
+                }
+            };
+            fileReader.readAsDataURL(file)
+        }
+
+        
+        const YOUR_CLOUD_NAME = 'dev-share'
+        const YOUR_UNSIGNED_UPLOAD_PRESET = 'ml_default'
+        const POST_URL = 'https://api.cloudinary.com/v1_1/' + YOUR_CLOUD_NAME + '/auto/upload'
+
+        let formdata = new FormData();
+
+        formdata.append('file', file);
+        formdata.append('cloud_name', YOUR_CLOUD_NAME);
+        formdata.append('upload_preset', YOUR_UNSIGNED_UPLOAD_PRESET);
+
+        const uploadedAvatar = await axios({
+            method: 'post',
+            url: POST_URL,
+            data: formdata
+        }).then((data) => {
+            return data.data
+        })
+
         setProduct({
             ...product,
-            id: maxId +1
+            img: uploadedAvatar.url
         })
-    }, [maxId])
+    }
 
-    // useEffect(() => {
-       
-    //     setProduct({
-    //         ...product,
-    //         title: '',
-    //         company: '',
-    //         category: '',
-    //         color: '',
-    //         prevPrice: '',
-    //         newPrice: '',
-    //         img: ''
-    //     })
-        
-    // }, [data])
-
-    
 
     return (
         <>
@@ -176,12 +192,14 @@ function CreateProduct({data, setData}) {
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <label>Image</label>
-                                <input type="text"
+                                <label>Avatar</label>
+                                <img className="row" src={fileDataURL} width='200px' height='120px' onClick={handleClickImage}/>
+                                <input type="file"
+                                    hidden
                                     className="form-control"
+                                    id = 'avatar'
                                     name="img"
-                                    value ={product.img}
-                                    onChange={handleChangeProduct} />
+                                    onChange={uploadAvatar} />
                             </div>
 
                         </div>

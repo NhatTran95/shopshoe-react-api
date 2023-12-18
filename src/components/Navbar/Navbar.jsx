@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 
-function Navbar({handleSetSearchStatus, handleSetSearch}) {
+function Navbar({ handleSetSearchStatus, handleSetSearch, cartItem }) {
     return (
         <div className="row navbar">
             <div className="col-md-2">
@@ -10,24 +10,29 @@ function Navbar({handleSetSearchStatus, handleSetSearch}) {
             </div>
             <div className="col-md-7">
                 <form className="d-flex" role="search">
-                    <input className="form-control me-2" 
-                    type="search" 
-                    placeholder="Search" 
-                    aria-label="Search" 
-                    onInput={(e) => {
-                        handleSetSearchStatus(true)
-                        handleSetSearch(e.target.value)
-                    }}
+                    <input className="form-control me-2"
+                        type="search"
+                        placeholder="Search"
+                        aria-label="Search"
+                        onInput={(e) => {
+                            handleSetSearchStatus(true)
+                            handleSetSearch(e.target.value)
+                        }}
                     />
                 </form>
             </div>
             <div className="col-md-3 navbar-icon">
-                <i className="fa-solid fa-cart-shopping"></i>
-                
+                <div className="div-cart">
+                    <i className="fa-solid fa-cart-shopping me-3">                 
+                    </i>
+                    <span className="cart-item">{cartItem}</span>
+                </div>
+                <div>
                     <Link to="/dashboard">
-                    <i className="fa-solid fa-user"></i>
+                        <i className="fa-solid fa-user"></i>
                     </Link>
-                
+                </div>
+
             </div>
         </div>
     )

@@ -7,23 +7,22 @@ import Dashboard from './components/Dashboard';
 import ListProduct from './components/ListProduct';
 import CreateProduct from './components/CreateProduct';
 
-import dataSoure from "./data/data.json"
 import LayoutDashboard from './components/LayoutDashboard';
 
 
 function App() {
-  const [data, setData] = useState(dataSoure)
+
 
   return (
     <>
       <div className='container'>
         <Router>
           <Routes>
-            <Route path='' element={<Content data={data} setData={setData}/>} />
+            <Route path='' element={<Content/>} />
             <Route path='/dashboard' element={<LayoutDashboard/>}>
               <Route path='' element={<Dashboard />}/>
-              <Route path='products' element={<ListProduct data={data} setData={setData}/>}/>
-              <Route path='products/create' element={<CreateProduct data={data} setData={setData}/>}/>
+              <Route path='products' element={<ListProduct/>}/>
+              <Route path='products/create' element={<CreateProduct/>}/>
             </Route>
 
           </Routes>

@@ -1,24 +1,24 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import data from "../data/data.json"
+import axios from "axios";
 
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleUpdateProducts, data}) {
+function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleUpdateProducts}) {
+    
 
     const [productUp, setProductUp] = useState({})
-
-    // useEffect(() => {
-    //     setProductUp(product)
-    // }, [])
+    const [fileDataURL, setfileDataURL] = useState(null)
 
     const handleChangeProduct = (e) => {
             if(Object.keys(productUp).length) {
                 const productNew = {
                     ...productUp,
-                    [e.target.name]: e.target.value
-                }
-    
-                console.log(productNew);
+                    [e.target.name]: e.target.value,
+                    id: product.id
+                }            
     
                 setProductUp(productNew)
             }
@@ -28,12 +28,8 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
                     [e.target.name]: e.target.value
                 }
     
-                console.log(productNew);
-    
                 setProductUp(productNew)
             }
-            
-
 
     }
 
@@ -43,6 +39,66 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
         handleUpdateProducts(productUp)
         handleCloseModalUpdate()
     }
+
+
+    const handleClickImage = () => {
+        document.getElementById('avatar').click()
+    }
+
+    const uploadAvatar = async (e) => {
+        const file = e.target.files[0];
+
+        if (!file.type.match(imageMimeType)) {
+            alert('Image mime type is not valid');
+            return;
+        }
+
+        let fileReader,
+            isCancel = false;
+        
+        if (!file) {
+            return;
+        }
+        
+        if (file) {
+            fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                const {result} = e.target;
+                if (result && !isCancel) {
+                    setfileDataURL(result)
+                }
+            };
+            fileReader.readAsDataURL(file)
+        }
+
+        
+        const YOUR_CLOUD_NAME = 'dev-share'
+        const YOUR_UNSIGNED_UPLOAD_PRESET = 'ml_default'
+        const POST_URL = 'https://api.cloudinary.com/v1_1/' + YOUR_CLOUD_NAME + '/auto/upload'
+
+        let formdata = new FormData();
+
+        formdata.append('file', file);
+        formdata.append('cloud_name', YOUR_CLOUD_NAME);
+        formdata.append('upload_preset', YOUR_UNSIGNED_UPLOAD_PRESET);
+
+        const uploadedAvatar = await axios({
+            method: 'post',
+            url: POST_URL,
+            data: formdata
+        }).then((data) => {
+            return data.data
+        })
+
+        setfileDataURL(uploadedAvatar.url)
+
+        setProductUp({
+            ...productUp,
+            img: uploadedAvatar.url,
+            id: product.id
+        })
+    }
+
 
     return (
         <>
@@ -63,7 +119,7 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
                             </div>
                             <div className="col-md-6">
                                 <label>Company</label>
-                                <select className="form-control" name="company" id="companySelect" onChange={handleChangeProduct} defaultValue={product.company}>
+                                {/* <select className="form-control" name="company" id="companySelect" onChange={handleChangeProduct} defaultValue={product.company}>
                                 <option></option>
                                     {
                                         data.companies.map((item) => {
@@ -74,8 +130,8 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
                                             
                                         })
                                     }
-                                </select>
-                                {/* <select className="form-control" name="company" id="companySelect" onChange={handleChangeProduct}>
+                                </select> */}
+                                <select className="form-control" name="company" id="companySelect" onChange={handleChangeProduct}>
                                     <option value={product.company}>{product.company}</option>
                                     {
                                         data.companies.map((item) => {
@@ -86,7 +142,7 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
                                             }
                                         })
                                     }
-                                </select> */}
+                                </select>
 
                                 {/* <input type="text"
                                     className="form-control"
@@ -155,7 +211,7 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
                                     onChange={handleChangeProduct} />
                             </div>
                         </div>
-                        <div className="row">
+                        {/* <div className="row">
                             <div className="col-md-12">
                                 <label>Image URL</label>
                                 <input type="text"
@@ -163,6 +219,19 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
                                     name="img"
                                     defaultValue={product.img}
                                     onChange={handleChangeProduct} />
+                            </div>
+
+                        </div> */}
+                         <div className="row">
+                            <div className="col-md-6">
+                                <label>Avatar</label>
+                                <img className="row" src={fileDataURL ? fileDataURL : product.img} width='200px' height='120px' onClick={handleClickImage}/>
+                                <input type="file"
+                                    hidden
+                                    className="form-control"
+                                    id = 'avatar'
+                                    name="img"
+                                    onChange={(e) => {uploadAvatar(e); handleChangeProduct(e)}} />
                             </div>
 
                         </div>
