@@ -417,5 +417,10 @@
             "color": "White"
         }
     ],
-    "carts": []
+    "carts": [
+        {
+            "id": 28,
+            "quantity": 1
+        }
+    ]
 }

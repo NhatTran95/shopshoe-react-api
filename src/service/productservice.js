@@ -51,16 +51,27 @@ const ProductService = {
             console.log(err);
         })
     },
-    // getAllCart: async () => {
-    //     return axios
-    //     .get('https://shopshoe0623g1-json-server-vercel.vercel.app/carts')
-    //     .then((resp) => {
-    //         return resp.data
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //     })
-    // }
+    getAllCart: async () => {
+        return axios
+        .get('https://shopshoe0623g1-json-server-vercel.vercel.app/carts')
+        .then((resp) => {
+            return resp.data
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    },
+    createCart: async (obj) => {
+        return axios
+        .post('https://shopshoe0623g1-json-server-vercel.vercel.app/carts', obj)
+        .then((resp) => {
+            return resp.data
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    },
+    
 }
 
 export default ProductService

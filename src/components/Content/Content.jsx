@@ -248,31 +248,51 @@ function Content() {
     }
 
     const [cartItem, setCartItem] = useState(0)
-    const [listCart, setListCart] = useState([])
+    
+    const getAllCart = () => {
+        return ProductService.getAllCart();
+    } 
 
-    const handleChangeCartItem = (id) => {
-        const index = listCart.findIndex((item) => item.id === id)
+    const handleChangeCartItem = async (id) => {
+        const carts = await getAllCart();
+        console.log(carts);
+        const index = carts.findIndex((item) => item.id === id)
         if (index > -1) {
-            alert("sp da co trong gio")
-            const newListCart = [...listCart]
-            let newItem = listCart[index];
-            newItem = {...newItem,
-                        "quantity": newItem.quantity + 1
+            alert("da tang so luong san pham nay trong gio")
+
+        }
+        else {
+            let item = { "id": id,
+                        "quantity": 1
             }
-            newListCart[index] = newItem
-            setListCart(newListCart)
-        } else {
-            const newListIdCart = [...listCart,
-            {
-                "id": id,
-                "quantity": 1
-            }
-            ]
-            setListCart(newListIdCart)
+            await ProductService.createCart(item)
             setCartItem(cartItem + 1)
         }
-        
     }
+
+    // const handleChangeCartItem = (id) => {
+    //     const index = listCart.findIndex((item) => item.id === id)
+    //     if (index > -1) {
+    //         alert("sp da co trong gio")
+    //         const newListCart = [...listCart]
+    //         let newItem = listCart[index];
+    //         newItem = {...newItem,
+    //                     "quantity": newItem.quantity + 1
+    //         }
+    //         newListCart[index] = newItem
+    //         setListCart(newListCart)
+    //     } else {
+    //         const newListIdCart = [...listCart,
+    //         {
+    //             "id": id,
+    //             "quantity": 1
+    //         }
+    //         ]
+    //         setListCart(newListIdCart)
+    //         setCartItem(cartItem + 1)
+    //     }
+        
+    // }
 
     // console.log(listCart);
 
