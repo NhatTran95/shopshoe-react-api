@@ -3,7 +3,7 @@ import axios from "axios"
 const ProductService = {
     getAllProducts: async () => {
         return axios
-        .get('http://localhost:3000/products')
+        .get('https://shopshoe0623g1-json-server-vercel.vercel.app/products')
         .then((resp) => {
             return resp.data
         })
@@ -13,7 +13,7 @@ const ProductService = {
     },
     getById: async (id) => {
         return axios
-        .get('http://localhost:3000/products/' +id)
+        .get('https://shopshoe0623g1-json-server-vercel.vercel.app/products/' +id)
         .then((resp) => {
             return resp.data
         })
@@ -23,7 +23,7 @@ const ProductService = {
     },
     create: async (obj) => {
         return axios
-        .post('http://localhost:3000/products', obj)
+        .post('https://shopshoe0623g1-json-server-vercel.vercel.app/products', obj)
         .then((resp) => {
             return resp.data
         })
@@ -33,7 +33,7 @@ const ProductService = {
     },
     update: async (id, obj) => {
         return axios
-        .patch('http://localhost:3000/products/' + id, obj)
+        .patch('https://shopshoe0623g1-json-server-vercel.vercel.app/products/' + id, obj)
         .then((resp) => {
             return resp.data
         })
@@ -43,7 +43,7 @@ const ProductService = {
     },
     delete: async (id) => {
         return axios
-        .delete('http://localhost:3000/products/' + id)
+        .delete('https://shopshoe0623g1-json-server-vercel.vercel.app/products/' + id)
         .then((resp) => {
             return resp.data
         })
