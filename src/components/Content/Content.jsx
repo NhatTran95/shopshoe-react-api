@@ -8,7 +8,7 @@ import ListProduct from './../ListProduct';
 
 
 function Content() {
-    
+
 
     const getAllProducts = async () => {
         const data = await ProductService.getAllProducts();
@@ -157,7 +157,7 @@ function Content() {
             setFilterProducts(newProducts)
             return
         }
-      
+
 
         if (companyStatus && priceStatus) {
             const newProducts = productList.filter((item) => item.company === company && (price < 150 ? parseInt(item.newPrice) > price && parseInt(item.newPrice) <= parseInt(price) + 50 : parseInt(item.newPrice) > price))
@@ -248,23 +248,38 @@ function Content() {
     }
 
     const [cartItem, setCartItem] = useState(0)
-    const [listIdCart, setListIdCart] = useState([])
+    const [listCart, setListCart] = useState([])
 
     const handleChangeCartItem = (id) => {
-        if(listIdCart.includes(id)) {
+        const index = listCart.findIndex((item) => item.id === id)
+        if (index > -1) {
             alert("sp da co trong gio")
-            return;
+            const newListCart = [...listCart]
+            let newItem = listCart[index];
+            newItem = {...newItem,
+                        "quantity": newItem.quantity + 1
+            }
+            newListCart[index] = newItem
+            setListCart(newListCart)
         } else {
-            const newListIdCart = [...listIdCart, id]
-            setListIdCart(newListIdCart)
+            const newListIdCart = [...listCart,
+            {
+                "id": id,
+                "quantity": 1
+            }
+            ]
+            setListCart(newListIdCart)
             setCartItem(cartItem + 1)
         }
+        
     }
 
-    useEffect(() => {
-        let ListCarts = ProductService.getAllCart();
-        console.log(ListCarts);
-    },[])
+    // console.log(listCart);
+
+    // useEffect(() => {
+    //     let ListCarts = ProductService.getAllCart();
+    //     console.log(ListCarts);
+    // },[])
 
     useEffect(() => {
         handleSetFilterProducts()
@@ -274,7 +289,7 @@ function Content() {
 
     return (
         <>
-            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} cartItem={cartItem}/>
+            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} cartItem={cartItem} />
             <div className="row d-flex">
                 <Sidebar handleSetCategory={handleSetCategory} handleSetCategoryStatus={handleSetCategoryStatus}
                     handleSetColor={handleSetColor} handleSetColorStatus={handleSetColorStatus}
@@ -307,7 +322,7 @@ function Content() {
                     <div className="d-flex flex-wrap mt-3 gap-3">
                         {
                             companyStatus || categoryStatus || colorStatus || priceStatus || searchStatus ? <ShoesList data={filterProducts} /> :
-                                <ShoesList data={productList} cartItem={cartItem} handleChangeCartItem={handleChangeCartItem}/>
+                                <ShoesList data={productList} cartItem={cartItem} handleChangeCartItem={handleChangeCartItem} />
                         }
 
                     </div>
@@ -319,7 +334,7 @@ function Content() {
     )
 }
 
-function ShoesList({data, handleChangeCartItem}) {
+function ShoesList({ data, handleChangeCartItem }) {
 
     return (
         data.sort(function (a, b) { return b.id - a.id }).map((shoe) => (
@@ -337,8 +352,8 @@ function ShoesList({data, handleChangeCartItem}) {
                     <div className="d-flex gap-4 align-items-center mt-3 justify-content-between">
                         <span className="" style={{ textDecoration: 'line-through' }}>{shoe.prevPrice}$</span>
                         <span>{shoe.newPrice}$</span>
-                        <i type='button' 
-                        className="fa-solid fa-cart-arrow-down"
+                        <i type='button'
+                            className="fa-solid fa-cart-arrow-down"
                             onClick={() => handleChangeCartItem(shoe.id)}
                         ></i>
                     </div>

@@ -23,8 +23,11 @@ function Navbar({ handleSetSearchStatus, handleSetSearch, cartItem }) {
             </div>
             <div className="col-md-3 navbar-icon">
                 <div className="div-cart">
-                    <i className="fa-solid fa-cart-shopping me-3">                 
-                    </i>
+                    <Link to="/carts">
+                        <i className="fa-solid fa-cart-shopping me-3">
+                        </i>
+                    </Link>
+
                     <span className="cart-item">{cartItem}</span>
                 </div>
                 <div>

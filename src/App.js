@@ -8,6 +8,7 @@ import ListProduct from './components/ListProduct';
 import CreateProduct from './components/CreateProduct';
 
 import LayoutDashboard from './components/LayoutDashboard';
+import Carts from './components/Carts';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
               <Route path='products' element={<ListProduct/>}/>
               <Route path='products/create' element={<CreateProduct/>}/>
             </Route>
+            <Route path='/carts' element={<Carts/>}/>
 
           </Routes>
         </Router>
