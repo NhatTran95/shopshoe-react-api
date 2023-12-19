@@ -260,7 +260,7 @@ function Content({cart, setCart, statusCart, setStatusCart}) {
             if (response[i].id == id) {
                 response[i].quantity = response[i].quantity + 1;
 
-                toast.success(`Quantity updated for product ${id}`, {
+                toast.success(`Quantity updated`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
                 
@@ -275,7 +275,7 @@ function Content({cart, setCart, statusCart, setStatusCart}) {
         }
         await cartService.createCart(newProduct);
 
-        toast.info(`Added product with ID: ${id} to cart`, {
+        toast.info(`Added product to cart`, {
             position: toast.POSITION.TOP_RIGHT
         });
 

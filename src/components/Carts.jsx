@@ -80,11 +80,11 @@ export default function Carts({ cart, setCart, statusCart, setStatusCart }) {
     }
 
     const reduceQuantity = async (id, quantity) => {
-        if(quantity > 1) {
+        if (quantity > 1) {
             const item = await cartService.getById(id);
             console.log(item);
 
-            const newItem = {...item, "quantity": item.quantity - 1}
+            const newItem = { ...item, "quantity": item.quantity - 1 }
             const newCart = [...cart]
             const index = newCart.findIndex(item => item.id === id);
             newCart[index] = newItem;
@@ -92,21 +92,21 @@ export default function Carts({ cart, setCart, statusCart, setStatusCart }) {
 
             setCart(newCart)
 
-            
+
         }
     }
 
     const increaseQuantity = async (id, quantity) => {
-       
-            const item = await cartService.getById(id);
-            const newItem = {...item, "quantity": item.quantity + 1}
-            const newCart = [...cart]
-            const index = newCart.findIndex(item => item.id === id);
-            newCart[index] = newItem;
-            await cartService.editCart(id, newItem)
 
-            setCart(newCart)
-        
+        const item = await cartService.getById(id);
+        const newItem = { ...item, "quantity": item.quantity + 1 }
+        const newCart = [...cart]
+        const index = newCart.findIndex(item => item.id === id);
+        newCart[index] = newItem;
+        await cartService.editCart(id, newItem)
+
+        setCart(newCart)
+
     }
 
     const handleChangeInfo = (e) => {
@@ -116,16 +116,31 @@ export default function Carts({ cart, setCart, statusCart, setStatusCart }) {
         })
     }
 
-    const handleCreateBill = async() => {
+    const handleCreateBill = async () => {
         console.log(customer);
+        const today = new Date();
+        const date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+        const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        const dateTime = date + ' ' + time;
+        console.log(dateTime);
         const bill = {
-            "cartDetails" : cartListDetails,
-            "totalPrice" : totalPrice,
-            "customer" : customer
+            "cartDetails": cartListDetails,
+            "totalPrice": totalPrice,
+            "customer": customer,
+            "date": dateTime
         }
-        
+
         await billService.createBill(bill)
         setBill(bill)
+
+        await cartService.deleteAllCart()
+        const newCart = []
+        setCart(newCart);
+
+        toast.info(`Checkout success`, {
+            position: toast.POSITION.TOP_RIGHT,
+            duration: 2000
+        });
 
     }
 
@@ -252,7 +267,7 @@ export default function Carts({ cart, setCart, statusCart, setStatusCart }) {
                             <h3>Customer Info</h3>
                             <div className='form-group mb-3'>
                                 <label className='form-label'>FullName</label>
-                                <input required type="text" name="fullname" id="" className='form-control' placeholder='Fullname' 
+                                <input required type="text" name="fullname" id="" className='form-control' placeholder='Fullname'
                                     value={customer.fullname}
                                     onChange={handleChangeInfo}
                                 />
@@ -260,7 +275,7 @@ export default function Carts({ cart, setCart, statusCart, setStatusCart }) {
                             </div>
                             <div className='form-group mb-3'>
                                 <label className='form-label'>Address</label>
-                                <input required type="text" name="address" id="" className='form-control' placeholder='Address' 
+                                <input required type="text" name="address" id="" className='form-control' placeholder='Address'
                                     value={customer.address}
                                     onChange={handleChangeInfo}
                                 />
@@ -276,13 +291,13 @@ export default function Carts({ cart, setCart, statusCart, setStatusCart }) {
                             </div>
                             <div className='form-group mb-3'>
                                 <label className='form-label'>Mobile</label>
-                                <input required type="tel" name="mobile" id="" className='form-control' placeholder='Mobile' 
+                                <input required type="tel" name="mobile" id="" className='form-control' placeholder='Mobile'
                                     value={customer.mobile}
                                     onChange={handleChangeInfo}
                                 />
                                 <span className='invalid-feedback'></span>
                             </div>
-                            <div class="py-3 bg-success mt-2 d-flex align-items-center justify-content-center text-white btn-checkout">
+                            <div className="py-3 bg-success mt-2 d-flex align-items-center justify-content-center text-white btn-checkout">
                                 <button className='btn btn-block' type='button' onClick={handleCreateBill}>CHECKOUT</button>
                             </div>
                         </form>

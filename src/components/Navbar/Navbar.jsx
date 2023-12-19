@@ -13,6 +13,9 @@ function Navbar({ handleSetSearchStatus, handleSetSearch, cart, setCart, statusC
             quantityInCart();
             setStatusCart(false);
         }
+        else {
+            quantityInCart();
+        }
     }, [statusCart]);
 
     return (

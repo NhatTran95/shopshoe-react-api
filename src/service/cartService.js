@@ -42,6 +42,16 @@ const cartService = {
                 console.log(error);
             });
     },
+    deleteAllCart: async () => {
+        return axios
+            .delete(urlAPI)
+            .then((response) => {
+                return response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    },
     getById: async (id) => {
         return axios
             .get(urlAPI + '/' + id)
