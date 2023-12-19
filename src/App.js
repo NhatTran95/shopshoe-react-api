@@ -9,27 +9,32 @@ import CreateProduct from './components/CreateProduct';
 
 import LayoutDashboard from './components/LayoutDashboard';
 import Carts from './components/Carts';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 
 function App() {
 
+  const [cart, setCart] = useState([]);
+  const [statusCart, setStatusCart] = useState(false);
 
   return (
     <>
       <div className='container'>
         <Router>
           <Routes>
-            <Route path='' element={<Content/>} />
+            <Route path='' element={<Content cart={cart} setCart={setCart} statusCart={statusCart} setStatusCart={setStatusCart}/>} />
             <Route path='/dashboard' element={<LayoutDashboard/>}>
               <Route path='' element={<Dashboard />}/>
               <Route path='products' element={<ListProduct/>}/>
               <Route path='products/create' element={<CreateProduct/>}/>
             </Route>
-            <Route path='/carts' element={<Carts/>}/>
+            <Route path='/carts' element={<Carts cart={cart} setCart={setCart} statusCart={statusCart} setStatusCart={setStatusCart}/>}/>
 
           </Routes>
         </Router>
       </div>
+      <ToastContainer/>
     </>
   )
 }

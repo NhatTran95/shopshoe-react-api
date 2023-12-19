@@ -4,10 +4,12 @@ import Navbar from "../Navbar/Navbar";
 import ProductService from "../../service/productservice";
 import data from "../../data/data.json"
 import ListProduct from './../ListProduct';
+import cartService from '../../service/cartService'
+import { toast } from 'react-toastify';
 
 
 
-function Content() {
+function Content({cart, setCart, statusCart, setStatusCart}) {
 
 
     const getAllProducts = async () => {
@@ -247,39 +249,39 @@ function Content() {
 
     }
 
-    // const [cartItem, setCartItem] = useState(0)
-    
+    const handleAddProductToCart = (id) => {
+        checkProductInCart(id);
+    }
 
-    // const handleChangeCartItem = (id) => {
-    //     const index = listCart.findIndex((item) => item.id === id)
-    //     if (index > -1) {
-    //         alert("sp da co trong gio")
-    //         const newListCart = [...listCart]
-    //         let newItem = listCart[index];
-    //         newItem = {...newItem,
-    //                     "quantity": newItem.quantity + 1
-    //         }
-    //         newListCart[index] = newItem
-    //         setListCart(newListCart)
-    //     } else {
-    //         const newListIdCart = [...listCart,
-    //         {
-    //             "id": id,
-    //             "quantity": 1
-    //         }
-    //         ]
-    //         setListCart(newListIdCart)
-    //         setCartItem(cartItem + 1)
-    //     }
-        
-    // }
+    const checkProductInCart = async (id) => {
+        const response = await cartService.getAllCarts();
 
-    // console.log(listCart);
+        for (let i = 0; i < response.length; i++) {
+            if (response[i].id == id) {
+                response[i].quantity = response[i].quantity + 1;
 
-    // useEffect(() => {
-    //     let ListCarts = ProductService.getAllCart();
-    //     console.log(ListCarts);
-    // },[])
+                toast.success(`Quantity updated for product ${id}`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                
+                cartService.editCart(id, response[i]); 
+                setStatusCart(true);
+                return;
+            }
+        }
+        const newProduct = {
+            id: id,
+            quantity: 1
+        }
+        await cartService.createCart(newProduct);
+
+        toast.info(`Added product with ID: ${id} to cart`, {
+            position: toast.POSITION.TOP_RIGHT
+        });
+
+        setStatusCart(true);
+    }
+
 
     useEffect(() => {
         handleSetFilterProducts()
@@ -289,7 +291,7 @@ function Content() {
 
     return (
         <>
-            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} />
+            <Navbar handleSetSearch={handleSetSearch} handleSetSearchStatus={handleSetSearchStatus} cart={cart} setCart={setCart} statusCart={statusCart} setStatusCart={setStatusCart}/>
             <div className="row d-flex">
                 <Sidebar handleSetCategory={handleSetCategory} handleSetCategoryStatus={handleSetCategoryStatus}
                     handleSetColor={handleSetColor} handleSetColorStatus={handleSetColorStatus}
@@ -321,8 +323,8 @@ function Content() {
                     </div>
                     <div className="d-flex flex-wrap mt-3 gap-3">
                         {
-                            companyStatus || categoryStatus || colorStatus || priceStatus || searchStatus ? <ShoesList data={filterProducts} /> :
-                                <ShoesList data={productList} cartItem={cartItem} handleChangeCartItem={handleChangeCartItem} />
+                            companyStatus || categoryStatus || colorStatus || priceStatus || searchStatus ? <ShoesList data={filterProducts} handleAddProductToCart= {handleAddProductToCart}/> :
+                                <ShoesList data={productList} handleAddProductToCart= {handleAddProductToCart} />
                         }
 
                     </div>
@@ -334,7 +336,7 @@ function Content() {
     )
 }
 
-function ShoesList({ data, handleChangeCartItem }) {
+function ShoesList({ data, handleAddProductToCart }) {
 
     return (
         data.sort(function (a, b) { return b.id - a.id }).map((shoe) => (
@@ -354,7 +356,7 @@ function ShoesList({ data, handleChangeCartItem }) {
                         <span>{shoe.newPrice}$</span>
                         <i type='button'
                             className="fa-solid fa-cart-arrow-down"
-                            onClick={() => handleChangeCartItem(shoe.id)}
+                            onClick={() => handleAddProductToCart(shoe.id)}
                         ></i>
                     </div>
 

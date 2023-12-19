@@ -11,6 +11,12 @@ export default function LayoutDashboard() {
                 <div className="col-md-2">
                     <div>
                         <h4>Dashboard</h4>
+                        <ul className="list">
+                            <li className="list-group-item">
+                                <Link to="/dashboard">Bills</Link>
+                            </li>
+                            
+                        </ul>
                     </div>
                     <div>
                         <h4>Product</h4>

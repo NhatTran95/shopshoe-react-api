@@ -21,3 +21,35 @@
   color: white; 
   padding: 1px;
 }
+
+.order-summary {
+  background-color: rgb(208, 204, 204);
+}
+
+.cart-quantity-wrap {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.cart-quantity {
+  align-items: center;
+  background-color: #0006;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 10px;
+  width: 100px;
+}
+
+.cart-quantity>span:first-child {
+  cursor: pointer;
+  text-align: center;
+  width: 25px;
+}
+
+.cart-quantity>span:last-child {
+  cursor: pointer;
+  text-align: center;
+  width: 25px;
+}

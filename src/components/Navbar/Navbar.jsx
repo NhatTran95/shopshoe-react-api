@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from 'react-router-dom'
+import cartService from '../../service/cartService'
 
-function Navbar({ handleSetSearchStatus, handleSetSearch }) {
+function Navbar({ handleSetSearchStatus, handleSetSearch, cart, setCart, statusCart, setStatusCart }) {
+    const quantityInCart = async () => {
+        const listCarts = await cartService.getAllCarts();
+        setCart(listCarts);
+    }
+
+    useEffect(() => {
+        if (statusCart) {
+            quantityInCart();
+            setStatusCart(false);
+        }
+    }, [statusCart]);
+
     return (
         <div className="row navbar">
             <div className="col-md-2">
@@ -28,13 +41,15 @@ function Navbar({ handleSetSearchStatus, handleSetSearch }) {
                         </i>
                     </Link>
 
-                    <span className="cart-item"></span>
+                    <span className="cart-item">{cart.length}</span>
                 </div>
+
                 <div>
                     <Link to="/dashboard">
                         <i className="fa-solid fa-user"></i>
                     </Link>
                 </div>
+
 
             </div>
         </div>
