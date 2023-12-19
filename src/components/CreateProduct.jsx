@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import ProductService from "../service/productservice";
 import data from "../data/data.json"
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
@@ -24,7 +25,10 @@ function CreateProduct() {
 
         await ProductService.create(product)
 
-        alert("Them moi thanh cong")
+        toast.info(`Create success`, {
+            position: toast.POSITION.TOP_RIGHT,
+            duration: 2000
+        });
         
         setProduct({
             ...product,
@@ -49,7 +53,11 @@ function CreateProduct() {
         const file = e.target.files[0];
 
         if (!file.type.match(imageMimeType)) {
-            alert('Image mime type is not valid');
+            toast.info(`Image mime type is not valid`, {
+                position: toast.POSITION.TOP_RIGHT,
+                duration: 2000
+            });
+            
             return;
         }
 

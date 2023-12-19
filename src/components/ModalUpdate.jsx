@@ -35,7 +35,11 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
 
     const handleUpdateProduct = () => {
         console.log(productUp);
-        alert('Cap nhat san pham thanh cong')
+        toast.info(`Cap nhat san pham thanh cong`, {
+            position: toast.POSITION.TOP_RIGHT,
+            duration: 2000
+        });
+       
         handleUpdateProducts(productUp)
         handleCloseModalUpdate()
     }
@@ -49,7 +53,13 @@ function ModalUpdate({ showModalUpdate, handleCloseModalUpdate, product, handleU
         const file = e.target.files[0];
 
         if (!file.type.match(imageMimeType)) {
-            alert('Image mime type is not valid');
+
+            toast.info(`Image mime type is not valid`, {
+                position: toast.POSITION.TOP_RIGHT,
+                duration: 2000
+            });
+           
+         
             return;
         }
 
